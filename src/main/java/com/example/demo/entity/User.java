@@ -49,6 +49,9 @@ public class User implements UserDetails  {
     @ManyToMany
     private Set<Role> roles;
 
+    @OneToOne
+    private Address address;
+
        private boolean accountNonExpired=true;//bu acountning amal qilish muddati
        private boolean accountNonLocked=true;//bu user boloclanmaganligi
        private boolean credentialsNonExpired=true;//

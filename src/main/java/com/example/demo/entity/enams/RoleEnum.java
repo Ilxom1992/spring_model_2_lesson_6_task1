@@ -1,8 +1,11 @@
 package com.example.demo.entity.enams;
 
 public enum RoleEnum {
-    ROLE_DIRECTOR,
-    ROLE_HR_MANAGER,
-    ROLE_MANAGER,
-    ROLE_EMPLOYEE
+    DIRECTOR,
+    HR_MANAGER,
+    FILIAL_MANAGER,
+    NUMBER_MANAGER,
+    EMPLOYEE_MANAGER,
+    NUMBER_EMPLOYEE,
+    CLIENT
 }

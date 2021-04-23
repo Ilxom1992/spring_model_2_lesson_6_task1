@@ -4,10 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Set;
 
 @Entity
 @Data
@@ -17,5 +16,13 @@ public class Tarif {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
+    private String title;
+    private String description;
+    private Double price;
+    private Timestamp startDate;
+    private Timestamp endDate;
+    @ManyToMany
+    private Set<Detail> details;
+    @ManyToMany
+    private Set<Ussd> ussdSet;
 }

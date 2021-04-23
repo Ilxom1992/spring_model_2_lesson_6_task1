@@ -17,5 +17,7 @@ public class Ussd {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private String ussdCode;
+    private String description;
 
 }
