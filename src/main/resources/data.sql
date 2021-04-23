@@ -4,7 +4,7 @@ values
         (2,'HR_MANAGER'),
         (3,'FILIAL_MANAGER'),
         (4,'NUMBER_MANAGER'),
-        (5,'EMPLOYEE_MANAGER');
-        (6,'NUMBER_EMPLOYEE');
+        (5,'EMPLOYEE_MANAGER'),
+        (6,'EMPLOYEE'),
         (7,'CLIENT');
 

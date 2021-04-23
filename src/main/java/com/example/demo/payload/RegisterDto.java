@@ -20,5 +20,6 @@ public class RegisterDto {
 
     @NotNull
     private String password;
+
     private List<Integer> roleListId;
 }

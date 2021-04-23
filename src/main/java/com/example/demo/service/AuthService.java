@@ -28,10 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class AuthService implements UserDetailsService {
@@ -54,71 +51,65 @@ public class AuthService implements UserDetailsService {
         this.jwtProvider = jwtProvider;
         this.jwtFilter = jwtFilter;
     }
-GetTheUser getTheUser =new GetTheUser();
+
+    GetTheUser getTheUser = new GetTheUser();
+
     /**
      * BU METHOD BAZAGA USERNI REGISTIRATSIYADAN O'TKAZISH UCHUN ISHLATILADI
      * BAZAGA USERNI SAQLAYDI VA UNGA TASDIQLASH CODINI YUBORADI
+     *
      * @param registerDto
      * @return
      */
     //
     public Response userRegister(RegisterDto registerDto, HttpServletRequest httpServletRequest) {
         User user = new User();
+        List<Integer> roleListId = registerDto.getRoleListId();
         UserDetails userDetails = jwtFilter.getUser(httpServletRequest);
+        Integer role=1;
         //USER BAZADA BOR YOKI YO'QLIGI TEKSHIRILYABDI
         if (userDetails != null) {
             //USER BAZADAN OLINDI
-            Optional<User> optionalUser = userRepository.findById(getTheUser.getCurrentAuditor().get());
+            Optional<User> optionalUser = getTheUser.getCurrentAuditorUser();
             //USERNINIG ROLLARI OLINDI
             Set<Role> roleUser = optionalUser.get().getRoles();
-            //ROLE TEKSHIRILADI AGAR 3 VA 4- ID LI ROLE BO'LSA REGISTRATSIYA QILISHGA RUHSAT BERILMAYDI QAYTARILADI
-            for (Role roleId2 : roleUser) {
-                if (roleId2.getId() == 3 || roleId2.getId() == 4) {
-                    return new Response("Not add", false);
-                }
-            }
-            //AGAR USER ROLE ID 2 BO'LSA U 1-2-3 ID LI ROLLARNI QO'SHA OLMAYDI QAYTARILADI
-            for (Role role : roleUser) {
-                if (role.getId() == 2 && (registerDto.getRoleListId().get(0) == 1 || registerDto.getRoleListId().get(0)==3 || registerDto.getRoleListId().get(0)==2) ) {
-                    return new Response("Not add", false);
-                }
-            }
-            //AKS HOLDA BAZAGA QO'SHISHGA RUHSAT BERILADI FAQAT KELGAN ROLLARDAN BIRINCHI ROLE BERILADI
-            user.setRoles(Collections.singleton(roleRepository.findById(registerDto.getRoleListId().get(0)).get()));
-            user.setFirstName(registerDto.getFirstName());
-            user.setLastName(registerDto.getLastName());
-            user.setEmail(registerDto.getEmail());
-         // String newPassword=UUID.randomUUID().toString().substring(8);
-            user.setPassword("");
-            //tasodifiy sonni yaratib beradi va userga saqlanadi
-            user.setEmailCode(UUID.randomUUID().toString());
-            userRepository.save(user);
-            //EMAILGA HABAR YUBORISH TASDIQLASH KODINI YUBORADI, METHODINI CHAQIRYABMIZ
-            sendEmail(user.getEmail(), user.getEmailCode());
-            return new Response("Muafaqiyatli ro'yhatdan o'tdingiz Aakkonutingiz " +
-                    "aktivlashtirishingiz uchun emailni tasdiqlang " +
-                    "va Yangi parol yuborildi", true);
-        }
 
-        boolean existsByEmail = userRepository.existsByEmail(registerDto.getEmail());
-        if (existsByEmail){
-            return new Response("Bunday email bazada mavjud",false);
+            for (Role roleId : roleUser) {
+                for (Integer roleDto : roleListId) {
+
+                    if (roleId.getId() == 1 && roleDto==2) {
+                        role = 2;
+                    }
+                  else if (roleId.getId() == 2 && roleDto==3) {
+                        role = 3;
+                    }
+                  else if (roleId.getId() == 3 && roleDto==4) {
+                        role = 4;
+                    }
+                  else if (roleId.getId() == 4 && roleDto==5) {
+                        role = 5;
+                    }
+                  else {return new Response("Not added",false);}
+
+                }
+            }
         }
-        user.setRoles(Collections.singleton(roleRepository.findByRoleName(RoleEnum.ROLE_DIRECTOR)));
+        //AKS HOLDA BAZAGA QO'SHISHGA RUHSAT BERILADI FAQAT KELGAN ROLLARDAN BIRINCHI ROLE BERILADI
+        user.setRoles(Collections.singleton(roleRepository.findById(role).get()));
         user.setFirstName(registerDto.getFirstName());
         user.setLastName(registerDto.getLastName());
         user.setEmail(registerDto.getEmail());
-        user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+        // String newPassword=UUID.randomUUID().toString().substring(8);
+        user.setPassword("");
         //tasodifiy sonni yaratib beradi va userga saqlanadi
         user.setEmailCode(UUID.randomUUID().toString());
         userRepository.save(user);
-
         //EMAILGA HABAR YUBORISH TASDIQLASH KODINI YUBORADI, METHODINI CHAQIRYABMIZ
-        sendEmail(user.getEmail(),user.getEmailCode());
+        sendEmail(user.getEmail(), user.getEmailCode());
         return new Response("Muafaqiyatli ro'yhatdan o'tdingiz Aakkonutingiz " +
-                "aktivlashtirishingiz uchun emailni tasdiqlang",true);
+                                    "aktivlashtirishingiz uchun emailni tasdiqlang " +
+                                    "va Yangi parol yuborildi", true);
     }
-
     /**
      * BU METHOD USER EMAILIGA ACTIVE LASHTIRISH CODINI  YUBORISH UCHUN ISHLATILADI
      * @param sendingEmail
