@@ -3,13 +3,13 @@ package com.example.demo.service;
 import com.example.demo.config.GetTheUser;
 import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
-import com.example.demo.entity.enams.RoleEnum;
-import com.example.demo.entity.enams.TaskStatus;
+
 import com.example.demo.payload.LoginDto;
 import com.example.demo.payload.RegisterDto;
 import com.example.demo.payload.Response;
 
 
+import com.example.demo.repository.CompanyRepository;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtFilter;
@@ -40,9 +40,10 @@ public class AuthService implements UserDetailsService {
     final AuthenticationManager authenticationManager;
     final JwtProvider jwtProvider;
     final JwtFilter jwtFilter;
+    final CompanyRepository companyRepository;
 
     public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, JavaMailSender javaMailSender,
-                       AuthenticationManager authenticationManager, JwtProvider jwtProvider, @Lazy JwtFilter jwtFilter) {
+                       AuthenticationManager authenticationManager, JwtProvider jwtProvider, @Lazy JwtFilter jwtFilter, CompanyRepository companyRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
@@ -50,6 +51,7 @@ public class AuthService implements UserDetailsService {
         this.authenticationManager = authenticationManager;
         this.jwtProvider = jwtProvider;
         this.jwtFilter = jwtFilter;
+        this.companyRepository = companyRepository;
     }
 
     GetTheUser getTheUser = new GetTheUser();
@@ -63,10 +65,16 @@ public class AuthService implements UserDetailsService {
      */
     //
     public Response userRegister(RegisterDto registerDto, HttpServletRequest httpServletRequest) {
+        boolean existsByEmail = userRepository.existsByEmail(registerDto.getEmail());
+        if (existsByEmail){
+            return new Response("Bunday email bazada mavjud",false);
+        }
         User user = new User();
         List<Integer> roleListId = registerDto.getRoleListId();
         UserDetails userDetails = jwtFilter.getUser(httpServletRequest);
         Integer role=1;
+       //hozircha oodiyroq username berdik takrorlanishiga tekshirmadik
+        String username="Director"+registerDto.getFirstName();
         //USER BAZADA BOR YOKI YO'QLIGI TEKSHIRILYABDI
         if (userDetails != null) {
             //USER BAZADAN OLINDI
@@ -74,38 +82,88 @@ public class AuthService implements UserDetailsService {
             //USERNINIG ROLLARI OLINDI
             Set<Role> roleUser = optionalUser.get().getRoles();
 
+            /**
+             * //TIZIMDAN FOYDALANUVCHILARGA ROLE BIRIKTIRIB CHIQAMIZ BU YERDA DIRECTOR
+             *             //BARCHA USERLARNI QO'SHISHI MUMKIN
+             *             //MANAGER ESA DIRECTORDAN BOSHQA USERLARNI QO'SHA OLADI
+             *             //QOLGAN USERLARNI FILIAL MANAGERLARI QO'SHISHI MUMKIN
+             *             //CLIENT O'ZINI O'ZI QO'SHISHI MUMKIN UNGA CLIENT ROLI BERILADI
+             *             //ROLE VA FIRSTNAME NI BIRICTIRIB UNGA USERNAME YASAB QAYTARILADI HOZIRCHA
+             */
+
             for (Role roleId : roleUser) {
                 for (Integer roleDto : roleListId) {
-
-                    if (roleId.getId() == 1 && roleDto==2) {
+                       if (roleId.getId() == 1 && roleDto==2) {
                         role = 2;
+                           username="Manager"+registerDto.getFirstName();
                     }
-                  else if (roleId.getId() == 2 && roleDto==3) {
+                  else if (roleId.getId() == 1 && roleDto==3) {
                         role = 3;
+                           username="FILIAL_MANAGER"+registerDto.getFirstName();
                     }
-                  else if (roleId.getId() == 3 && roleDto==4) {
+                  else if (roleId.getId() == 1 && roleDto==4) {
                         role = 4;
+                           username="NUMBER_MANAGER"+registerDto.getFirstName();
                     }
-                  else if (roleId.getId() == 4 && roleDto==5) {
+                  else if (roleId.getId() == 1 && roleDto==5) {
                         role = 5;
+                           username="EMPLOYEE_MANAGER"+registerDto.getFirstName();
                     }
-                  else {return new Response("Not added",false);}
+                  else if (roleId.getId() == 1 && roleDto==6) {
+                           role = 6;
+                           username="EMPLOYEE"+registerDto.getFirstName();
+                       }
+                       else if (roleId.getId() == 2 && roleDto==3) {
+                           role = 3;
+                           username="FILIAL_MANAGER"+registerDto.getFirstName();
+                       }
+                       else if (roleId.getId() == 2 && roleDto==4) {
+                           role = 4;
+                           username="NUMBER_MANAGER"+registerDto.getFirstName();
+                       } else if (roleId.getId() == 2 && roleDto==5) {
+                           role = 5;
+                           username="EMPLOYEE_MANAGER"+registerDto.getFirstName();
+                       } else if (roleId.getId() == 2 && roleDto==6) {
+                           role = 6;
+                           username="NUMBER_MANAGER"+registerDto.getFirstName();
+                       } else if (roleId.getId() == 3 && roleDto==4) {
+                           role = 4;
+                           username="EMPLOYEE"+registerDto.getFirstName();
+                       }   else if (roleId.getId() == 3 && roleDto==2) {
+                           role = 2;
+                           username="FILIAL_MANAGER"+registerDto.getFirstName();
+                       } else if (roleId.getId() == 3 && roleDto==5) {
+                           role = 5;
+                           username="EMPLOYEE_MANAGER"+registerDto.getFirstName();
+                       } else if (roleId.getId() == 3 && roleDto==6) {
+                           role = 6;
+                           username="EMPLOYEE"+registerDto.getFirstName();
+                       }
 
+                  else {return new Response("Not added",false);}
                 }
             }
         }
-        //AKS HOLDA BAZAGA QO'SHISHGA RUHSAT BERILADI FAQAT KELGAN ROLLARDAN BIRINCHI ROLE BERILADI
+        if (roleListId!=null) {
+            for (Integer roleClient : roleListId) {
+                if (roleClient == 7) {
+                    role = 7;
+                }
+            }
+        }
         user.setRoles(Collections.singleton(roleRepository.findById(role).get()));
         user.setFirstName(registerDto.getFirstName());
         user.setLastName(registerDto.getLastName());
         user.setEmail(registerDto.getEmail());
-        // String newPassword=UUID.randomUUID().toString().substring(8);
-        user.setPassword("");
+        String newPassword=UUID.randomUUID().toString().substring(1);
+        user.setPassword(newPassword);
+        user.setUsername(username);
+        user.setCompany(companyRepository.findById(registerDto.getCompanyId()).get());
         //tasodifiy sonni yaratib beradi va userga saqlanadi
         user.setEmailCode(UUID.randomUUID().toString());
         userRepository.save(user);
         //EMAILGA HABAR YUBORISH TASDIQLASH KODINI YUBORADI, METHODINI CHAQIRYABMIZ
-        sendEmail(user.getEmail(), user.getEmailCode());
+        sendEmail(user.getEmail(), user.getEmailCode(),newPassword);
         return new Response("Muafaqiyatli ro'yhatdan o'tdingiz Aakkonutingiz " +
                                     "aktivlashtirishingiz uchun emailni tasdiqlang " +
                                     "va Yangi parol yuborildi", true);
@@ -116,14 +174,14 @@ public class AuthService implements UserDetailsService {
      * @param emailCod
      * @return
      */
-    public Boolean sendEmail(String sendingEmail,String emailCod) {
+    public Boolean sendEmail(String sendingEmail,String emailCod,String newPassword) {
         try {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setFrom("Test@pdp.com");
             mailMessage.setTo(sendingEmail);
             mailMessage.setSubject("Akkountni Tasdiqlash");
             mailMessage.setText("<a href='http://localhost:8080/auth/verifyEmail?emailCode="
-                    + emailCod + "&email=" + sendingEmail +"&newPassword="+null+"'>Tasdiqlang</a>");
+                    + emailCod + "&email=" + sendingEmail +"&newPassword="+newPassword+"'>Tasdiqlang</a>");
             javaMailSender.send(mailMessage);
             return true;
         }
@@ -163,8 +221,7 @@ catch (Exception e){
             User user= optionalUser.get();
             user.setEnabled(true);
             user.setEmailCode(null);
-            if (!newPassword.equals("null")){
-            user.setPassword(passwordEncoder.encode(newPassword));}
+            user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
             return new Response("Account tasdiqlandi",true);
         }

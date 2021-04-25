@@ -22,4 +22,5 @@ public class RegisterDto {
     private String password;
 
     private List<Integer> roleListId;
+    private Integer companyId;
 }

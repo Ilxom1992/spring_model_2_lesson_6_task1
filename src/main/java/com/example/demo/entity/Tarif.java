@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -19,8 +20,8 @@ public class Tarif {
     private String title;
     private String description;
     private Double price;
-    private Timestamp startDate;
-    private Timestamp endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     @ManyToMany
     private Set<Detail> details;
     @ManyToMany

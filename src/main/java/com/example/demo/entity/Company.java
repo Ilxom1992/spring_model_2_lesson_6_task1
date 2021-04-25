@@ -1,10 +1,11 @@
 package com.example.demo.entity;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -16,11 +17,9 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-    @ManyToOne
-    private User user;
-    @OneToMany
-    private Set<Address> address;
+
+    @OneToMany(mappedBy = "company")
+    private List<User> user;
     @ManyToOne
     private Company company;
-
 }

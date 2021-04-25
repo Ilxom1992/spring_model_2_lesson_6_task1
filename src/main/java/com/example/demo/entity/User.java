@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.example.demo.entity.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,10 @@ public class User implements UserDetails  {
     @Id
     @GeneratedValue
     private UUID id;//USRNING TAKRORLANMAS RAQQAMI
+
+    @Column(unique = true)
+    private String username;
+
     @Size(min = 3,max = 50)
     @Column(nullable = false)
     private String firstName;
@@ -48,9 +53,9 @@ public class User implements UserDetails  {
 
     @ManyToMany
     private Set<Role> roles;
-
-    @OneToOne
-    private Address address;
+    @JsonIgnore
+    @ManyToOne
+    private Company company;
 
        private boolean accountNonExpired=true;//bu acountning amal qilish muddati
        private boolean accountNonLocked=true;//bu user boloclanmaganligi
@@ -66,7 +71,7 @@ public class User implements UserDetails  {
 //USERNINIG USER NAMENI QAYTARUVCHI METOD
     @Override
     public String getUsername() {
-        return this.email;
+        return this.username;
     }
 //BU ACCOUNTNINIG AMAL QILISH MUDDATI NI QAYTARADI
     @Override
