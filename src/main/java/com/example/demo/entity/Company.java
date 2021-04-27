@@ -22,4 +22,7 @@ public class Company {
     private List<User> user;
     @ManyToOne
     private Company company;
+
+    @OneToOne
+    private  Address address;
 }

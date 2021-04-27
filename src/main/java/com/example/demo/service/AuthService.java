@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.config.GetTheUser;
+import com.example.demo.entity.Company;
 import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
 
@@ -72,7 +73,7 @@ public class AuthService implements UserDetailsService {
         User user = new User();
         List<Integer> roleListId = registerDto.getRoleListId();
         UserDetails userDetails = jwtFilter.getUser(httpServletRequest);
-        Integer role=1;
+        int role=1;
        //hozircha oodiyroq username berdik takrorlanishiga tekshirmadik
         String username="Director"+registerDto.getFirstName();
         //USER BAZADA BOR YOKI YO'QLIGI TEKSHIRILYABDI
@@ -93,49 +94,56 @@ public class AuthService implements UserDetailsService {
 
             for (Role roleId : roleUser) {
                 for (Integer roleDto : roleListId) {
-                       if (roleId.getId() == 1 && roleDto==2) {
+                    /**
+                     * role id bir bo'lsa companiya directori bo'ladi va u 2-3-4-5-6- id rollarni qo'sha oladi faqat o'zining companiya
+                     * id siga kelgan companiya id si teng bo'lsa qo'shishga tuhsat beriladi va qolgan menejerlar ham o'ziga biriktirilgan
+                     * companiya va filiallar id si orqali shu companiyaga  boshqa hodimlarni qo'shishi mumkin, shu orqali shu kompaniya
+                     * shu managerga tegishli ekanini tekshirildi hozircha.
+                     */
+                    boolean company=optionalUser.get().getCompany().getId()==registerDto.getCompanyId();
+                       if (roleId.getId() == 1 && roleDto==2 && company) {
                         role = 2;
                            username="Manager"+registerDto.getFirstName();
                     }
-                  else if (roleId.getId() == 1 && roleDto==3) {
+                  else if (roleId.getId() == 1 && roleDto==3 && company) {
                         role = 3;
                            username="FILIAL_MANAGER"+registerDto.getFirstName();
                     }
-                  else if (roleId.getId() == 1 && roleDto==4) {
+                  else if (roleId.getId() == 1 && roleDto==4 && company) {
                         role = 4;
                            username="NUMBER_MANAGER"+registerDto.getFirstName();
                     }
-                  else if (roleId.getId() == 1 && roleDto==5) {
+                  else if (roleId.getId() == 1 && roleDto==5 && company) {
                         role = 5;
                            username="EMPLOYEE_MANAGER"+registerDto.getFirstName();
                     }
-                  else if (roleId.getId() == 1 && roleDto==6) {
+                  else if (roleId.getId() == 1 && roleDto==6 && company) {
                            role = 6;
                            username="EMPLOYEE"+registerDto.getFirstName();
                        }
-                       else if (roleId.getId() == 2 && roleDto==3) {
+                       else if (roleId.getId() == 2 && roleDto==3 && company) {
                            role = 3;
                            username="FILIAL_MANAGER"+registerDto.getFirstName();
                        }
-                       else if (roleId.getId() == 2 && roleDto==4) {
+                       else if (roleId.getId() == 2 && roleDto==4 && company) {
                            role = 4;
                            username="NUMBER_MANAGER"+registerDto.getFirstName();
                        } else if (roleId.getId() == 2 && roleDto==5) {
                            role = 5;
                            username="EMPLOYEE_MANAGER"+registerDto.getFirstName();
-                       } else if (roleId.getId() == 2 && roleDto==6) {
+                       } else if (roleId.getId() == 2 && roleDto==6 && company) {
                            role = 6;
                            username="NUMBER_MANAGER"+registerDto.getFirstName();
-                       } else if (roleId.getId() == 3 && roleDto==4) {
+                       } else if (roleId.getId() == 3 && roleDto==4 && company) {
                            role = 4;
                            username="EMPLOYEE"+registerDto.getFirstName();
-                       }   else if (roleId.getId() == 3 && roleDto==2) {
+                       }   else if (roleId.getId() == 3 && roleDto==2 && company) {
                            role = 2;
                            username="FILIAL_MANAGER"+registerDto.getFirstName();
-                       } else if (roleId.getId() == 3 && roleDto==5) {
+                       } else if (roleId.getId() == 3 && roleDto==5 && company) {
                            role = 5;
                            username="EMPLOYEE_MANAGER"+registerDto.getFirstName();
-                       } else if (roleId.getId() == 3 && roleDto==6) {
+                       } else if (roleId.getId() == 3 && roleDto==6 && company) {
                            role = 6;
                            username="EMPLOYEE"+registerDto.getFirstName();
                        }
@@ -148,6 +156,24 @@ public class AuthService implements UserDetailsService {
             for (Integer roleClient : roleListId) {
                 if (roleClient == 7) {
                     role = 7;
+                    user.setRoles(Collections.singleton(roleRepository.findById(role).get()));
+                    user.setFirstName(registerDto.getFirstName());
+                    user.setLastName(registerDto.getLastName());
+                    user.setEmail(registerDto.getEmail());
+                    user.setPassword(registerDto.getPassword());
+                    String username2="Client"+registerDto.getFirstName();
+                    user.setUsername(username2);
+                    user.setGender(registerDto.isGender());
+                    user.setPlaceOfBirth(registerDto.getPlaceOfBirth());
+                    user.setDateOfBirth(registerDto.getDateOfBirth());
+                    user.setNationality(registerDto.getNationality());
+                    user.setType(registerDto.isType());
+                    user.setPassport(registerDto.getPassport());
+                    user.setCompany(companyRepository.findById(registerDto.getCompanyId()).get());
+                    userRepository.save(user);
+                    //bu yerda oddiy clientlarni ro'yhatga oldik emailiga habar yuborilmaydi
+                    return new Response("Muafaqiyatli ro'yhatdan o'tdingiz Aakkonutingiz", true);
+
                 }
             }
         }
@@ -158,7 +184,16 @@ public class AuthService implements UserDetailsService {
         String newPassword=UUID.randomUUID().toString().substring(1);
         user.setPassword(newPassword);
         user.setUsername(username);
-        user.setCompany(companyRepository.findById(registerDto.getCompanyId()).get());
+        user.setGender(registerDto.isGender());
+        user.setPlaceOfBirth(registerDto.getPlaceOfBirth());
+        user.setDateOfBirth(registerDto.getDateOfBirth());
+        user.setNationality(registerDto.getNationality());
+        user.setType(registerDto.isType());
+        user.setPassport(registerDto.getPassport());
+        if (registerDto.getCompanyId()!=null) {
+            Optional<Company> optionalCompany = companyRepository.findById(registerDto.getCompanyId());
+            optionalCompany.ifPresent(user::setCompany);
+        }
         //tasodifiy sonni yaratib beradi va userga saqlanadi
         user.setEmailCode(UUID.randomUUID().toString());
         userRepository.save(user);

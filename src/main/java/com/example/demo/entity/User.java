@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
@@ -38,11 +39,19 @@ public class User implements UserDetails  {
     @Column(nullable = false)
     private String lastName;
 
-    @Column(unique = true,nullable = false)
+    private String nationality;
+    private LocalDate DateOfBirth;
+    private boolean gender;
+    private String placeOfBirth;
+    private String passport;
+    private boolean type;  //Jismony bo'lsa ture yuridik bo'lsa false
+
+    @Column(unique = true)
     private String email;
 
     @Column(nullable = false)
     private String password;
+
 
 
     @Column(nullable = false,updatable = false)
@@ -60,7 +69,7 @@ public class User implements UserDetails  {
        private boolean accountNonExpired=true;//bu acountning amal qilish muddati
        private boolean accountNonLocked=true;//bu user boloclanmaganligi
        private boolean credentialsNonExpired=true;//
-       private boolean enabled;//
+       private boolean enabled=true;//
        private  String emailCode;
      //BU USER DETAILESNINIG METHODLARI
     //USERNINIG HUQUQLARI

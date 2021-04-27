@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -21,8 +22,8 @@ public class SimcardService {
 
     private boolean status;
 
-    private Timestamp startDate;
+    private LocalDateTime startDate;
 
-    private  Timestamp endDate;
+    private LocalDateTime endDate;
 
 }

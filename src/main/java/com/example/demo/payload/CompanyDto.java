@@ -12,5 +12,9 @@ public class CompanyDto {
     private String name;
     private Integer userId;
     private Integer companyId;
-    private Integer addressId;
+
+    private String region;
+    private String district;
+    private String street;
+    private Integer houseNumber;
 }
