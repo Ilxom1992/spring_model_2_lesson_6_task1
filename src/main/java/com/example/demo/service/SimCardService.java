@@ -94,7 +94,8 @@ GetTheUser getTheUser=new GetTheUser();
              * Clientga simcartani birictirish uchun oldin bazaga client ni saqlab oladi
              * client topilsa simcartaga clientni berib yuboradi
              */
-            SimCard simCard = simCardRepository.findByPhoneNumber(phoneNumber);
+            Optional<SimCard> optionalSimCard = simCardRepository.findByPhoneNumber(phoneNumber);
+            SimCard simCard = optionalSimCard.get();
             Optional<User> optionalUser = userRepository.findById(clientId);
             if (!optionalUser.isPresent())
                 return new Response("Client Not add", false);

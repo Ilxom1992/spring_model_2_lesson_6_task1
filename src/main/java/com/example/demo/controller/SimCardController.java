@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.payload.Response;
-import com.example.demo.payload.SimCardDto;
-import com.example.demo.payload.SimCardServiceDto;
-import com.example.demo.payload.SimCardTariffDto;
+import com.example.demo.payload.*;
+import com.example.demo.service.PaymentService;
 import com.example.demo.service.SimCardService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,9 +22,12 @@ import java.util.UUID;
 @RequestMapping("/simCard")
 public class SimCardController {
     final SimCardService simCardService;
+  final PaymentService paymentService;
 
-    public SimCardController(SimCardService simCardService) {
+    public SimCardController(SimCardService simCardService, PaymentService paymentService) {
         this.simCardService = simCardService;
+
+        this.paymentService = paymentService;
     }
 
     //  CREATE
@@ -67,7 +68,12 @@ public class SimCardController {
     public HttpEntity<?> findAllConnectedTariff() {
         return ResponseEntity.ok(simCardService.findAllConnectedTariff());
     }
+@PostMapping("/payment")
+public HttpEntity<?> paymentSimCard(@RequestBody PaymentDto paymentDto){
+        paymentService.doTransaction(paymentDto);
+        return ResponseEntity.ok(paymentService.doTransaction(paymentDto));
 
+}
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(

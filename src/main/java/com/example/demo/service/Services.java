@@ -1,7 +1,11 @@
 package com.example.demo.service;
 
+import com.example.demo.config.GetTheUser;
+import com.example.demo.entity.Role;
 import com.example.demo.entity.ServiceType;
+import com.example.demo.entity.User;
 import com.example.demo.entity.Ussd;
+import com.example.demo.entity.enams.RoleEnum;
 import com.example.demo.payload.Response;
 import com.example.demo.payload.ServiceDto;
 import com.example.demo.repository.ServiceRepository;
@@ -25,33 +29,52 @@ public class Services {
         this.ussdRepository = ussdRepository;
     }
 
+    GetTheUser getTheUser=new GetTheUser();
+
     //  CREATE
-    public Response add(ServiceDto serviceDto){
-        com.example.demo.entity.Service service=new com.example.demo.entity.Service();
-        service.setServiceName(serviceDto.getServiceName());
-        service.setUssdCode(serviceDto.getUssdCode());
-        service.setDescription(service.getDescription());
-        Optional<ServiceType> optionalServiceType = serviceTypeRepository.findById(serviceDto.getServiceTypeId());
-        if (!optionalServiceType.isPresent())
-            return new Response("Not found ServiceType",false);
-        service.setServiceType(optionalServiceType.get());
-        Set set=new HashSet();
-        for (Integer n:serviceDto.getUssdId()) {
-            Optional<Ussd> optionalUssd = ussdRepository.findById(n);
-            if (!optionalUssd.isPresent())
-               return new Response("Not found Ussd code",false);
-            set.add(optionalUssd.get());
+    public Response add(ServiceDto serviceDto) {
+        Optional<User> optionalUser = getTheUser.getCurrentAuditorUser();
+        Set<Role> roles = optionalUser.get().getRoles();
+        for (Role role : roles) {
+            if (role.getRoleName().equals(RoleEnum.MANAGER)) {
+
+                com.example.demo.entity.Service service = new com.example.demo.entity.Service();
+                service.setServiceName(serviceDto.getServiceName());
+                service.setUssdCode(serviceDto.getUssdCode());
+                service.setDescription(service.getDescription());
+                Optional<ServiceType> optionalServiceType = serviceTypeRepository.findById(serviceDto.getServiceTypeId());
+                if (!optionalServiceType.isPresent())
+                    return new Response("Not found ServiceType", false);
+                service.setServiceType(optionalServiceType.get());
+                Set set = new HashSet();
+                for (Integer n : serviceDto.getUssdId()) {
+                    Optional<Ussd> optionalUssd = ussdRepository.findById(n);
+                    if (!optionalUssd.isPresent())
+                        return new Response("Not found Ussd code", false);
+                    set.add(optionalUssd.get());
+                }
+                service.setUssdSet(set);
+                serviceRepository.save(service);
+                return new Response("object saved", true);
+            }
+
         }
-        service.setUssdSet(set);
-        serviceRepository.save(service);
-        return new Response("object saved",true);
+        return new Response("object not saved", false);
     }
+
     //READ
     public Response get(){
 
         return new Response("object ",true, serviceRepository.findAll());}
+
+
     //UPDATE
     public Response edit(Integer id, ServiceDto serviceDto){
+
+            Optional<User> optionalUser = getTheUser.getCurrentAuditorUser();
+            Set<Role> roles = optionalUser.get().getRoles();
+            for (Role role : roles) {
+                if (role.getRoleName().equals(RoleEnum.MANAGER)) {
         Optional<com.example.demo.entity.Service> optionalService = serviceRepository.findById(id);
         if (!optionalService.isPresent())
           return new Response("Not found Services",false);
@@ -73,6 +96,9 @@ public class Services {
         service.setUssdSet(set);
         serviceRepository.save(service);
         return new Response("object edited",true);
+    }}
+
+        return new Response("object Not edited edited",false);
     }
     //DELETE
     public Response delete( Integer id ){
