@@ -40,16 +40,6 @@ public class UssdController {
     public HttpEntity<?> edit(@Valid @RequestBody Ussd ussd,@Valid @PathVariable Integer id){
         return ResponseEntity.status(200).body(ussdService.edit(id,ussd));
     }
-    //DELETE
-    @DeleteMapping(value = "/{id}")
-    public HttpEntity<?> delete(@PathVariable Integer id){
-        return ResponseEntity.ok(ussdService.delete(id));
-    }
-    //READ BY ID
-    @GetMapping(value = "/{id}")
-    public HttpEntity<?> getById(@PathVariable Integer id){
-        return ResponseEntity.ok(ussdService.getById(id));
-    }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(

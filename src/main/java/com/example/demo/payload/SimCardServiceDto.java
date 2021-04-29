@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class SimcardServiceDto {
+public class SimCardServiceDto {
     private Integer simCardId;
     private Integer serviceId;
     private boolean status=true;

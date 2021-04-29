@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 public class UssdCodeDto {
+    private Integer companyCode;
     private Integer ussdCode;
     private String description;
 }

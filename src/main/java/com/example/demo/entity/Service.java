@@ -24,6 +24,7 @@ public class Service {
     private ServiceType serviceType;
 
     private String description;
+    private Double price;
 
     @ManyToMany
     private Set<Detail> detailSet;

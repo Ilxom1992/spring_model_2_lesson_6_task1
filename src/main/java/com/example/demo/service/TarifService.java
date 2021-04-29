@@ -1,24 +1,59 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.Detail;
 import com.example.demo.entity.Tarif;
+import com.example.demo.entity.Ussd;
 import com.example.demo.payload.TarifDto;
+import com.example.demo.repository.DetailRepository;
 import com.example.demo.repository.TarifRepository;
+import com.example.demo.repository.UssdRepository;
 import org.springframework.stereotype.Service;
 import com.example.demo.payload.Response;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TarifService {
     final TarifRepository tarifRepository;
+    final DetailRepository detailRepository;
+    final UssdRepository ussdRepository;
 
-    public TarifService(TarifRepository tarifRepository) {
+    public TarifService(TarifRepository tarifRepository, DetailRepository detailRepository, UssdRepository ussdRepository) {
         this.tarifRepository = tarifRepository;
+        this.detailRepository = detailRepository;
+        this.ussdRepository = ussdRepository;
     }
 
     //  CREATE
-    public Response add(Tarif tarif){
+
+    public Response add(TarifDto tarifDto){
+        Tarif tarif=new Tarif();
+        tarif.setPrice(tarifDto.getPrice());
+        tarif.setDescription(tarifDto.getDescription());
+        tarif.setTitle(tarifDto.getTitle());
+        tarif.setStartDate(tarifDto.getStartDate());
+        tarif.setEndDate(tarifDto.getEndDate());
+        Set<Detail> details=new HashSet<>();
+        Set<Ussd> ussds=new HashSet<>();
+        for (Integer detailId:tarifDto.getTarifDetailsId()) {
+            Optional<Detail> optionalDetail = detailRepository.findById(detailId);
+            if (!optionalDetail.isPresent())
+                return new Response("Not found Detils",false);
+            details.add(optionalDetail.get());
+        }
+        for (Integer ussdId:tarifDto.getTarifDetailsId()) {
+            Optional<Ussd> optionalUssd = ussdRepository.findById(ussdId);
+            if (!optionalUssd.isPresent())
+                return new  Response("Not found Ussd Code",false);
+            ussds.add(optionalUssd.get());
+        }
+        tarif.setDetails(details);
+        tarif.setUssdSet(ussds);
+        tarifRepository.save(tarif);
         return new Response("object saved",true,tarifRepository.save(tarif));
+
     }
     //READ
     public Response get(){
@@ -30,14 +65,31 @@ public class TarifService {
         if (!optionalTarif.isPresent()){
             return  new Response("Not found Tarif",false);
         }
-        Tarif tarif=optionalTarif.get();
-        tarif.setTitle(tarifDto.getTitle());
+        Tarif tarif = optionalTarif.get();
+        tarif.setPrice(tarifDto.getPrice());
         tarif.setDescription(tarifDto.getDescription());
-        tarif.setPrice(tarif.getPrice());
+        tarif.setTitle(tarifDto.getTitle());
         tarif.setStartDate(tarifDto.getStartDate());
         tarif.setEndDate(tarifDto.getEndDate());
-        Tarif save = tarifRepository.save(tarif);
-        return new Response("object edited",true,save);
+        Set<Detail> details=new HashSet<>();
+        Set<Ussd> ussds=new HashSet<>();
+        for (Integer detailId:tarifDto.getTarifDetailsId()) {
+            Optional<Detail> optionalDetail = detailRepository.findById(detailId);
+            if (!optionalDetail.isPresent())
+                return new Response("Not found Detils",false);
+            details.add(optionalDetail.get());
+        }
+        for (Integer ussdId:tarifDto.getTarifDetailsId()) {
+            Optional<Ussd> optionalUssd = ussdRepository.findById(ussdId);
+            if (!optionalUssd.isPresent())
+                return new  Response("Not found Ussd Code",false);
+            ussds.add(optionalUssd.get());
+        }
+        tarif.setDetails(details);
+        tarif.setUssdSet(ussds);
+        tarifRepository.save(tarif);
+        return new Response("object saved",true,tarifRepository.save(tarif));
+
     }
     //DELETE
     public Response delete( Integer id ){

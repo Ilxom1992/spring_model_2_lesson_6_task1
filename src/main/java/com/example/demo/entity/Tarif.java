@@ -26,4 +26,7 @@ public class Tarif {
     private Set<Detail> details;
     @ManyToMany
     private Set<Ussd> ussdSet;
+    @Column(nullable = false)
+
+    private Integer countDateOfExpire;
 }

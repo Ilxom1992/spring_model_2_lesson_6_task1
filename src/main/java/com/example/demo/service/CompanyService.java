@@ -29,13 +29,14 @@ public class CompanyService {
     public Response add(CompanyDto companyDto){
         Company company=new Company();
         company.setName(companyDto.getName());
-        if (companyDto.getCompanyId()!=null){
-            Optional<Company> optionalCompany = companyRepository.findById(companyDto.getCompanyId());
+        if (companyDto.getHeadOfficeId()!=null){
+            Optional<Company> optionalCompany = companyRepository.findById(companyDto.getHeadOfficeId());
+
             if (!optionalCompany.isPresent()){
                 return new Response("Company not found",false);
             }
             Company company1 = optionalCompany.get();
-            company.setCompany(company1);
+            company.setHeadOffice(company1);
             Address address=new Address();
             address.setStreet(companyDto.getStreet());
             address.setHouseNumber(companyDto.getHouseNumber());
@@ -43,6 +44,7 @@ public class CompanyService {
             address.setRegion(companyDto.getRegion());
             Address address1 = addressRepository.save(address);
             company.setAddress(address1);
+            company.setSimCode(companyDto.getSimCode());
             return new Response("object saved",true,companyRepository.save(company));
 
         }
@@ -51,6 +53,7 @@ public class CompanyService {
         address.setHouseNumber(companyDto.getHouseNumber());
         address.setDistrict(companyDto.getDistrict());
         address.setRegion(companyDto.getRegion());
+        company.setSimCode(companyDto.getSimCode());
         Address address1 = addressRepository.save(address);
         company.setAddress(address1);
         GetTheUser getTheUser=new GetTheUser();
@@ -76,13 +79,13 @@ public class CompanyService {
         }
         Company company=optionalCompany1.get();
         company.setName(companyDto.getName());
-        if (companyDto.getCompanyId()!=null){
-            Optional<Company> optionalCompany = companyRepository.findById(companyDto.getCompanyId());
+        if (companyDto.getHeadOfficeId()!=null){
+            Optional<Company> optionalCompany = companyRepository.findById(companyDto.getHeadOfficeId());
             if (!optionalCompany.isPresent()){
                 return new Response("Company Vot found",false);
             }
             Company company1 = optionalCompany.get();
-            company.setCompany(company1);
+            company.setHeadOffice(company1);
         }
         return new Response("object edited",true);
     }

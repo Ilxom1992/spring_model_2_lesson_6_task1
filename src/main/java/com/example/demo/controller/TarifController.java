@@ -27,7 +27,7 @@ public class TarifController {
 
     //  CREATE
     @PostMapping
-    public HttpEntity<?> add(@Valid @RequestBody Tarif tarifDto){
+    public HttpEntity<?> add(@Valid @RequestBody TarifDto tarifDto){
         return ResponseEntity.status(200).body(tarifService.add(tarifDto));
     }
     //READ

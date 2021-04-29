@@ -4,23 +4,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SimcardService {
+public class SimCardService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @ManyToOne
-    private Simcard simcard;
+    private SimCard simcard;
+
     @ManyToOne
     private Service service;
 
-    private boolean status;
+    private boolean status=true;
 
     private LocalDateTime startDate;
 

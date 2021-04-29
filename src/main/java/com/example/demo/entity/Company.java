@@ -21,8 +21,9 @@ public class Company {
     @OneToMany(mappedBy = "company")
     private List<User> user;
     @ManyToOne
-    private Company company;
-
+    private Company HeadOffice;
+    @Column(nullable = false,length = 2)
+    private Integer simCode;
     @OneToOne
     private  Address address;
 }

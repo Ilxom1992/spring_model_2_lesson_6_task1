@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 public class CompanyDto {
-    private String name;
+    private String  name;
     private Integer userId;
-    private Integer companyId;
+    private Integer simCode;
+    private Integer HeadOfficeId; //Bu Biron companiya filali bo'lsa o'sha companiya id keladi
 
     private String region;
     private String district;
