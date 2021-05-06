@@ -275,8 +275,7 @@ catch (Exception e){
                     loginDto.getUsername(),
                     loginDto.getPassword()));
             User user=(User)authenticate.getPrincipal();
-            String token = jwtProvider.generateToken(loginDto.getUsername(), user.getRoles()
-            );
+            String token = jwtProvider.generateToken(loginDto.getUsername(), user.getRoles());
             return new Response("Token",true,token);
 
         }catch (BadCredentialsException badCredentialsException){

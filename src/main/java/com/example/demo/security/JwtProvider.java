@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
 
+import javax.swing.text.Position;
 import java.util.Date;
 import java.util.Set;
 
@@ -44,7 +45,7 @@ public class JwtProvider {
      * @param token
      * @return
      */
-    public  String getUserEmailFromToken(String token){
+    public  String getUsernameFromToken(String token){
         try {
             String email = Jwts
                     .parser()
