@@ -99,7 +99,7 @@ GetTheUser getTheUser=new GetTheUser();
             Optional<User> optionalUser = userRepository.findById(clientId);
             if (!optionalUser.isPresent())
                 return new Response("Client Not add", false);
-            simCard.setUser(optionalUser.get());
+
             simCard.setTarif(tarifRepository.findById(tarifId).get());
         }
         return new Response("SimCard Userga Biriktirildi",true);
@@ -191,4 +191,7 @@ GetTheUser getTheUser=new GetTheUser();
         return simCardTariffRepository.findAll();
     }
 
+    public List<com.example.demo.entity.SimCardService> findAllConnectedService() {
+        return simcardServiceRepository.findAll();
+    }
 }

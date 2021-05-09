@@ -27,6 +27,6 @@ public class Tarif {
     @ManyToMany
     private Set<Ussd> ussdSet;
     @Column(nullable = false)
-
+    private String ussd;
     private Integer countDateOfExpire;
 }

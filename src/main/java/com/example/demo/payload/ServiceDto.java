@@ -16,4 +16,6 @@ public class ServiceDto {
     private Integer serviceTypeId;
     private String description;
     private List<Integer> ussdId;
+    private Integer detailId;
+    private double price;
 }

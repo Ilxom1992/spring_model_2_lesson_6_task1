@@ -3,15 +3,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Collection;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SimCard {
+public class SimCard  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,9 +22,6 @@ public class SimCard {
 
     @Column(nullable = false, unique = true, length = 13)
     private String phoneNumber;
-
-    @ManyToOne
-    private User user;
 
     private double balance;
 

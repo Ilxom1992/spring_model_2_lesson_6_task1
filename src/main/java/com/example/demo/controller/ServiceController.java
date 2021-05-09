@@ -1,6 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.ServiceType;
+import com.example.demo.payload.DetailDto;
+import com.example.demo.payload.Response;
 import com.example.demo.payload.ServiceDto;
+import com.example.demo.payload.TarifDto;
 import com.example.demo.service.Services;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,42 +16,53 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/service")
 public class ServiceController {
-   final Services services;
+   final Services serviceSvc;
 
-    public ServiceController(Services services) {
-        this.services = services;
+    public ServiceController(Services serviceSvc) {
+        this.serviceSvc = serviceSvc;
     }
-    //  CREATE
+
+
     @PostMapping
-    public HttpEntity<?> add(@Valid @RequestBody ServiceDto serviceDto){
-        return ResponseEntity.status(200).body(services.add(serviceDto));
+    public HttpEntity<?> saveService(@RequestBody ServiceDto serviceDto) {
+        Response response = serviceSvc.saveService(serviceDto);
+        return ResponseEntity.status(response.isStatus() ? 201 : 401).body(response);
     }
-    //READ
-    @GetMapping
-    public HttpEntity<?> get(){
-        return ResponseEntity.status(200).body(services.get());
+
+    @PostMapping("/tariff")
+    public HttpEntity<?> saveTariff(@RequestBody TarifDto tariffDto) {
+        Response response = serviceSvc.saveTariff(tariffDto);
+        return ResponseEntity.status(response.isStatus() ? 201 : 401).body(response);
     }
-    //UPDATE
-    @PutMapping(value = "/{id}")
-    public HttpEntity<?> edit(@Valid @RequestBody ServiceDto serviceDto,@Valid @PathVariable Integer id){
-        return ResponseEntity.status(200).body(services.edit(id,serviceDto));
+
+    @PostMapping("/serviceType")
+    public HttpEntity<?> saveServiceType(@RequestBody ServiceType serviceType) {
+        Response response = serviceSvc.saveServiceType(serviceType);
+        return ResponseEntity.status(response.isStatus() ? 201 : 401).body(response);
     }
-    //DELETE
-    @DeleteMapping(value = "/{id}")
-    public HttpEntity<?> delete(@PathVariable Integer id){
-        return ResponseEntity.ok(services.delete(id));
+
+    @PutMapping("/serviceType/{id}")
+    public HttpEntity<?> editServiceType(@PathVariable(name = "id") Integer serviceTypeId, @RequestBody ServiceType serviceType) {
+        Response response = serviceSvc.editServiceType(serviceTypeId, serviceType);
+        return ResponseEntity.status(response.isStatus() ? HttpStatus.ACCEPTED : HttpStatus.UNAUTHORIZED).body(response);
     }
-    //READ BY ID
-    @GetMapping(value = "/{id}")
-    public HttpEntity<?> getById(@PathVariable Integer id){
-        return ResponseEntity.ok(services.getById(id));
+
+    @DeleteMapping("/serviceType/{id}")
+    public HttpEntity<?> deleteServiceType(@PathVariable(name = "id") Integer serviceTypeId) {
+        Response response = serviceSvc.deleteServiceType(serviceTypeId);
+        return ResponseEntity.status(response.isStatus() ? HttpStatus.NO_CONTENT : HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    @PostMapping("/serviceDetail")
+    public HttpEntity<?> saveServiceDetail(@RequestBody DetailDto detailDto) {
+        Response response = serviceSvc.saveServiceDetail(detailDto);
+        return ResponseEntity.status(response.isStatus() ? 201 : 401).body(response);
     }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

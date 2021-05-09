@@ -30,27 +30,6 @@ public class SimCardController {
         this.paymentService = paymentService;
     }
 
-    //  CREATE
-    @PostMapping
-    public HttpEntity<?> add(@Valid @RequestBody SimCardDto simCardDto){
-        return ResponseEntity.status(200).body(simCardService.add(simCardDto));
-    }
-    //READ
-    @GetMapping
-    public HttpEntity<?> get(){
-        return ResponseEntity.status(200).body(simCardService.get());
-    }
-    //DELETE
-    @DeleteMapping(value = "/{id}")
-    public HttpEntity<?> delete(@PathVariable Integer id){
-        return ResponseEntity.ok(simCardService.delete(id));
-    }
-  @PostMapping("/registerSimCard")
-    public HttpEntity<?>registerSimCard(@RequestParam String phoneNumber , @RequestParam Integer tarifId, @RequestParam UUID clientId){
-      Response response = simCardService.registerSimCardToClient(phoneNumber, tarifId, clientId);
-      return ResponseEntity.status(200).body(response);}
-
-
     @PostMapping("/service")
     public HttpEntity<?> connectServiceToSimCard(@RequestBody SimCardServiceDto simCardServiceDto) {
         Response response = simCardService.connectServiceToSimCard(simCardServiceDto);
@@ -68,12 +47,30 @@ public class SimCardController {
     public HttpEntity<?> findAllConnectedTariff() {
         return ResponseEntity.ok(simCardService.findAllConnectedTariff());
     }
-@PostMapping("/payment")
-public HttpEntity<?> paymentSimCard(@RequestBody PaymentDto paymentDto){
-        paymentService.doTransaction(paymentDto);
-        return ResponseEntity.ok(paymentService.doTransaction(paymentDto));
+    @GetMapping("/service")
+    public HttpEntity<?> findAllConnectedService() {
+        return ResponseEntity.ok(simCardService.findAllConnectedService());
+    }
+    //  CREATE
+    @PostMapping
+    public HttpEntity<?> add(@Valid @RequestBody SimCardDto simCardDto){
 
-}
+        return ResponseEntity.status(200).body(simCardService.add(simCardDto));
+    }
+    //READ
+    @GetMapping
+    public HttpEntity<?> get(){
+        return ResponseEntity.status(200).body(simCardService.get());
+    }
+    //DELETE
+    @DeleteMapping(value = "/{id}")
+    public HttpEntity<?> delete(@PathVariable Integer id){
+        return ResponseEntity.ok(simCardService.delete(id));
+    }
+    @PostMapping("/registerSimCard")
+    public HttpEntity<?>registerSimCard(@RequestParam String phoneNumber , @RequestParam Integer tarifId, @RequestParam UUID clientId){
+        Response response = simCardService.registerSimCardToClient(phoneNumber, tarifId, clientId);
+        return ResponseEntity.status(200).body(response);}
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(

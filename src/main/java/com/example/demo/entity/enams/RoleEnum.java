@@ -5,7 +5,7 @@ public enum RoleEnum {
     MANAGER,
     FILIAL_MANAGER,
     NUMBER_MANAGER,
-    EMPLOYEE_MANAGER,
+    TARIFF_MANAGER,
     NUMBER_EMPLOYEE,
     CLIENT
 }
