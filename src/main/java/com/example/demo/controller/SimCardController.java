@@ -29,24 +29,26 @@ public class SimCardController {
 
         this.paymentService = paymentService;
     }
-
+   // Service-ni SimCard-ga ulash
     @PostMapping("/service")
     public HttpEntity<?> connectServiceToSimCard(@RequestBody SimCardServiceDto simCardServiceDto) {
         Response response = simCardService.connectServiceToSimCard(simCardServiceDto);
         return ResponseEntity.status(response.isStatus() ? 201 : 401).body(response);
     }
-
+   // Tarifni SimCard-ga ulash
     @PostMapping("/tariff")
     public HttpEntity<?> connectTariffToSimCard(@RequestBody SimCardTariffDto simCardTariffDto) {
         Response response = simCardService.connectTariffToSimCard(simCardTariffDto);
         return ResponseEntity.status(response.isStatus() ? 201 : 401).body(response);
     }
 
-
+    //Barcha ulangan tarifni topish
     @GetMapping("/tariff")
     public HttpEntity<?> findAllConnectedTariff() {
         return ResponseEntity.ok(simCardService.findAllConnectedTariff());
     }
+
+  //  Barcha ulangan xizmat
     @GetMapping("/service")
     public HttpEntity<?> findAllConnectedService() {
         return ResponseEntity.ok(simCardService.findAllConnectedService());

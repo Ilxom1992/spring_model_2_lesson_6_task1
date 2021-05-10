@@ -1,6 +1,5 @@
 package com.example.demo.payload;
 
-import com.example.demo.entity.SimCard;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,9 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class DetailDto {
-    private Integer serviceTypeId;
+public class DebtDto {
     private Double amount;
-    private SimCard simCard;
 }

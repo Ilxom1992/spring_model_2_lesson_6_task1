@@ -26,28 +26,28 @@ final CompanyService companyService;
     }
     //  CREATE
     @PostMapping
-    public HttpEntity<?> add(@Valid @RequestBody CompanyDto companyDto){
+    public HttpEntity<?> addCompany(@Valid @RequestBody CompanyDto companyDto){
         Response response = companyService.add(companyDto);
         return ResponseEntity.status(200).body(response);
     }
     //READ
     @GetMapping
-    public HttpEntity<?> get(){
+    public HttpEntity<?> getCompany(){
         return ResponseEntity.status(200).body(companyService.get());
     }
     //UPDATE
     @PutMapping(value = "/{id}")
-    public HttpEntity<?> edit(@Valid @RequestBody CompanyDto companyDto, @PathVariable Integer id ){
+    public HttpEntity<?> editCompany(@Valid @RequestBody CompanyDto companyDto, @PathVariable Integer id ){
         return ResponseEntity.status(200).body(companyService.edit(id,companyDto));
     }
     //DELETE
     @DeleteMapping(value = "/{id}")
-    public HttpEntity<?> delete(@PathVariable Integer id){
+    public HttpEntity<?> deleteCompany(@PathVariable Integer id){
         return ResponseEntity.ok(companyService.delete(id));
     }
     //READ BY ID
     @GetMapping(value = "/{id}")
-    public HttpEntity<?> getById(@PathVariable Integer id){
+    public HttpEntity<?> getByIdCompany(@PathVariable Integer id){
         return ResponseEntity.ok(companyService.getById(id));
     }
     @ResponseStatus(HttpStatus.BAD_REQUEST)

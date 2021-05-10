@@ -29,4 +29,14 @@ public class Tarif {
     @Column(nullable = false)
     private String ussd;
     private Integer countDateOfExpire;
+
+    private int mb; // tarif rejasi doirasida beriladigan mb miqdori
+    private int sms; // tarif rejasi doirasida beriladigan sms miqdori
+    private int min; // tarif rejasi doirasida beriladigan min miqdori
+    private int mbCost; // mb tugaganda 1mb narxi
+    private int smsCost; // sms tugaganda 1sms narxi
+    private int minCost; // min tugaganda 1min narxi
+
+
+
 }

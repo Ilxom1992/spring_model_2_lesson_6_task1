@@ -24,27 +24,27 @@ public class DetailController {
     }
     //  CREATE
     @PostMapping
-    public HttpEntity<?> add(@Valid @RequestBody DetailDto detailDto){
+    public HttpEntity<?> addDetail(@Valid @RequestBody DetailDto detailDto){
         return ResponseEntity.status(200).body(detailService.addDetail(detailDto));
     }
     //READ
     @GetMapping
-    public HttpEntity<?> get(){
+    public HttpEntity<?> getDetail(){
         return ResponseEntity.status(200).body(detailService.getDetail());
     }
     //UPDATE
     @PutMapping(value = "/{id}")
-    public HttpEntity<?> edit(@Valid @RequestBody DetailDto detailDto,@PathVariable Integer id){
+    public HttpEntity<?> editDetail(@Valid @RequestBody DetailDto detailDto,@PathVariable Integer id){
         return ResponseEntity.status(200).body(detailService.editDetail(id,detailDto));
     }
     //DELETE
     @DeleteMapping(value = "/{id}")
-    public HttpEntity<?> delete(@PathVariable Integer id){
+    public HttpEntity<?> deleteDetail(@PathVariable Integer id){
         return ResponseEntity.ok(detailService.deleteDetail(id));
     }
     //READ BY ID
     @GetMapping(value = "/{id}")
-    public HttpEntity<?> getById(@PathVariable Integer id){
+    public HttpEntity<?> getByIdDetail(@PathVariable Integer id){
         return ResponseEntity.ok(detailService.getByIdDetail(id));
     }
     @ResponseStatus(HttpStatus.BAD_REQUEST)

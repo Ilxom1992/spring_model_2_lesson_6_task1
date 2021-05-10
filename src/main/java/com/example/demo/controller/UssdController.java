@@ -27,17 +27,17 @@ public class UssdController {
 
     //  CREATE
     @PostMapping
-    public HttpEntity<?> add(@Valid @RequestBody Ussd ussd){
+    public HttpEntity<?> addUssd(@Valid @RequestBody Ussd ussd){
         return ResponseEntity.status(200).body(ussdService.add(ussd));
     }
     //READ
     @GetMapping
-    public HttpEntity<?> get(){
+    public HttpEntity<?> getUssd(){
         return ResponseEntity.status(200).body(ussdService.get());
     }
     //UPDATE
     @PutMapping(value = "/{id}")
-    public HttpEntity<?> edit(@Valid @RequestBody Ussd ussd,@Valid @PathVariable Integer id){
+    public HttpEntity<?> editUssd(@Valid @RequestBody Ussd ussd,@Valid @PathVariable Integer id){
         return ResponseEntity.status(200).body(ussdService.edit(id,ussd));
     }
     @ResponseStatus(HttpStatus.BAD_REQUEST)

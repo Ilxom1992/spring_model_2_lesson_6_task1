@@ -1,16 +1,17 @@
 package com.example.demo.payload;
 
-import com.example.demo.entity.SimCard;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class DetailDto {
-    private Integer serviceTypeId;
-    private Double amount;
-    private SimCard simCard;
+public class BuyingSimCardDto {
+    private String code;
+    private String number;
+    private Double sum;
+    private Integer tariffId;
 }

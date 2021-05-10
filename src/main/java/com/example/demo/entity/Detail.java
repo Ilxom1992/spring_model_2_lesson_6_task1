@@ -17,4 +17,14 @@ public class Detail {
     @ManyToOne
     private ServiceType serviceType;
     private Double amount;
+
+
+
+//    @OneToOne
+//    private Client client;
+
+    @ManyToOne//bitta simkartaga ko'pgina detaillar to'g'ri keladi
+    private SimCard simCard;
+
+
 }

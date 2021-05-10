@@ -27,27 +27,27 @@ public class TarifController {
 
     //  CREATE
     @PostMapping
-    public HttpEntity<?> add(@Valid @RequestBody TarifDto tarifDto){
+    public HttpEntity<?> addTariff(@Valid @RequestBody TarifDto tarifDto){
         return ResponseEntity.status(200).body(tarifService.add(tarifDto));
     }
     //READ
     @GetMapping
-    public HttpEntity<?> get(){
+    public HttpEntity<?> getTariff(){
         return ResponseEntity.status(200).body(tarifService.get());
     }
     //UPDATE
     @PutMapping(value = "/{id}")
-    public HttpEntity<?> edit(@Valid @PathVariable Integer id, @RequestBody TarifDto tarifDto ){
+    public HttpEntity<?> editTarff(@Valid @PathVariable Integer id, @RequestBody TarifDto tarifDto ){
         return ResponseEntity.status(200).body(tarifService.edit(id,tarifDto));
     }
     //DELETE
     @DeleteMapping(value = "/{id}")
-    public HttpEntity<?> delete(@PathVariable Integer id){
+    public HttpEntity<?> deleteTariff(@PathVariable Integer id){
         return ResponseEntity.ok(tarifService.delete(id));
     }
     //READ BY ID
     @GetMapping(value = "/{id}")
-    public HttpEntity<?> getById(@PathVariable Integer id){
+    public HttpEntity<?> getByIdTariff(@PathVariable Integer id){
         return ResponseEntity.ok(tarifService.getById(id));
     }
     @ResponseStatus(HttpStatus.BAD_REQUEST)

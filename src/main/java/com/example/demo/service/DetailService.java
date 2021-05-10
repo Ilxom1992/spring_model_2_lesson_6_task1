@@ -4,11 +4,14 @@ import com.example.demo.config.GetTheUser;
 import com.example.demo.entity.Detail;
 import com.example.demo.entity.Role;
 import com.example.demo.entity.ServiceType;
+import com.example.demo.entity.SimCard;
+import com.example.demo.payload.ApiResponse;
 import com.example.demo.payload.DetailDto;
 import com.example.demo.payload.Response;
 
 import com.example.demo.repository.DetailRepository;
 import com.example.demo.repository.ServiceTypeRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -89,4 +92,19 @@ public class DetailService {
         public Response getByIdDetail( Integer id ){
             return new Response("object deleted",true,detailRepository.findById(id));
         }
+    //details qo'shish
+    public ApiResponse add(DetailDto detailDto){
+        SimCard principal = (SimCard) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal.getId().toString().equals(detailDto.getSimCard().getId().toString())){
+            Detail details = new Detail();
+            details.setAmount(detailDto.getAmount());
+
+            details.setSimCard(detailDto.getSimCard());
+            detailRepository.save(details);
+            return new ApiResponse("Details saqlandi!", true);
+        }
+
+        return new ApiResponse("Error!", false);
+    }
     }
